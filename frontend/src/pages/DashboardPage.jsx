@@ -21,7 +21,6 @@ const DashboardPage = () => {
   // --- UI COLORS ---
   const FLUENT_BLUE = "#5E38CC";
   const FLUENT_PRIMARY_TEXT = "#FFFFFF";
-  const FLUENT_SECONDARY_TEXT = "#D8D8D8";
   const FLUENT_DANGER = "#EE4E4E";
   const FLUENT_WARNING = "#FFA800";
 
@@ -46,7 +45,7 @@ const DashboardPage = () => {
     marginTop: "50px",
   };
 
-  // --- HANDLERS (local only, no backend) ---
+  // --- HANDLERS ---
   const handleCreateRoom = (e) => {
     e.preventDefault();
     if (!newRoomName.trim()) return;
@@ -65,7 +64,11 @@ const DashboardPage = () => {
       style={{
         minHeight: "100vh",
         color: textColor,
-        ...backgroundStyle.style,
+        background:
+          backgroundStyle?.style?.background ||
+          "linear-gradient(135deg, #3e2b8c 0%, #1a1333 50%, #0d0b1a 100%)",
+        backgroundAttachment: "fixed",
+        backgroundSize: "cover",
         transition: "background 0.3s ease",
       }}
     >
