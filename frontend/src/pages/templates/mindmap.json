@@ -1,0 +1,9 @@
+{
+  "elements": [
+    { "type": "ellipse", "x": 300, "y": 200, "width": 200, "height": 100, "text": "Central Idea" },
+    { "type": "rect", "x": 100, "y": 100, "width": 120, "height": 60, "text": "Topic A" },
+    { "type": "rect", "x": 550, "y": 100, "width": 120, "height": 60, "text": "Topic B" },
+    { "type": "arrow", "from": [400, 250], "to": [160, 130] },
+    { "type": "arrow", "from": [500, 250], "to": [600, 130] }
+  ]
+}

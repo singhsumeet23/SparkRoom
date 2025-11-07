@@ -1,0 +1,9 @@
+{
+  "elements": [
+    { "type": "rect", "x": 100, "y": 100, "width": 160, "height": 60, "text": "Start" },
+    { "type": "arrow", "from": [180, 160], "to": [180, 240] },
+    { "type": "diamond", "x": 100, "y": 240, "width": 160, "height": 100, "text": "Decision" },
+    { "type": "arrow", "from": [180, 340], "to": [180, 420] },
+    { "type": "rect", "x": 100, "y": 420, "width": 160, "height": 60, "text": "End" }
+  ]
+}
