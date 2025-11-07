@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
@@ -10,8 +10,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
     if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
       setToken(storedToken);
@@ -22,21 +22,47 @@ export const AuthProvider = ({ children }) => {
   const login = (userData, userToken) => {
     setUser(userData);
     setToken(userToken);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', userToken);
+    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", userToken);
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
-  const myUser = user ? { id: user._id, name: user.name, avatarUrl: user.avatarUrl } : null;
+  // ✅ ADD THIS FUNCTION
+  const loginAsGuest = async () => {
+    const guestUser = {
+      _id: "guest123",
+      name: "Guest User",
+      avatarUrl: "https://api.dicebear.com/7.x/identicon/svg?seed=Guest",
+    };
+    setUser(guestUser);
+    setToken("guest-token");
+    localStorage.setItem("user", JSON.stringify(guestUser));
+    localStorage.setItem("token", "guest-token");
+  };
+
+  const myUser = user
+    ? { id: user._id, name: user.name, avatarUrl: user.avatarUrl }
+    : null;
 
   return (
-    <AuthContext.Provider value={{ user, token, myUser, login, logout, isAuthenticated: !!user, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        myUser,
+        login,
+        logout,
+        loginAsGuest, // ✅ ADD IT HERE
+        isAuthenticated: !!user,
+        loading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

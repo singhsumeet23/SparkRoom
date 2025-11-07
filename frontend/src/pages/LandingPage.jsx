@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+// import { useAuth } from "../context/AuthContext";
 
 const ACCENT_COLOR_DARK = "#6c5ce7";
 const ACCENT_COLOR_LIGHT = "#a29bfe";
