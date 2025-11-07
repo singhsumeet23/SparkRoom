@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useUI } from "../context/UIContext";
 import BackgroundSettings from "../components/BackgroundSettings";
 
 const DashboardPage = () => {
-  const { user, token, logout, isAuthenticated } = useAuth();
+  const { user, logout } = useAuth();
   const { backgroundStyle } = useUI();
   const navigate = useNavigate();
 
-  const [documents, setDocuments] = useState([]);
   const [newRoomName, setNewRoomName] = useState("");
   const [joinRoomId, setJoinRoomId] = useState("");
-  const [loadingDocs, setLoadingDocs] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
-  const [displayedDocs, setDisplayedDocs] = useState(5); // Number of rooms to show initially
+  const [documents, setDocuments] = useState([
+    { _id: "101", name: "Project Plan" },
+    { _id: "102", name: "UI Design Mockup" },
+    { _id: "103", name: "Marketing Notes" },
+  ]);
 
-  const API_BASE_URL = "http://localhost:3001/api/documents";
-
-  // Fluent-style UI COLORS
+  // --- UI COLORS ---
   const FLUENT_BLUE = "#5E38CC";
   const FLUENT_PRIMARY_TEXT = "#FFFFFF";
   const FLUENT_SECONDARY_TEXT = "#D8D8D8";
@@ -46,58 +46,19 @@ const DashboardPage = () => {
     marginTop: "50px",
   };
 
-  // --- LIFECYCLE & HANDLERS ---
-  useEffect(() => {
-    // Removed authentication redirect - users can always access dashboard
-    const fetchDocuments = async () => {
-      setLoadingDocs(true);
-      try {
-        const res = await fetch(API_BASE_URL, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        if (res.ok) setDocuments(data);
-        else setDocuments([]);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoadingDocs(false);
-      }
-    };
-
-    fetchDocuments();
-  }, [token]); // Removed isAuthenticated and navigate from dependencies
-
-  const handleCreateRoom = async (e) => {
+  // --- HANDLERS (local only, no backend) ---
+  const handleCreateRoom = (e) => {
     e.preventDefault();
     if (!newRoomName.trim()) return;
-    try {
-      const res = await fetch(API_BASE_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ name: newRoomName }),
-      });
-      const newDoc = await res.json();
-      if (res.ok) navigate(`/document/${newDoc._id}`);
-      else alert(newDoc.message);
-    } catch (err) {
-      console.error(err);
-    }
+    const newDoc = { _id: Date.now().toString(), name: newRoomName };
+    setDocuments((prev) => [...prev, newDoc]);
+    navigate(`/document/${newDoc._id}`);
   };
 
   const handleJoinRoom = (e) => {
     e.preventDefault();
     if (joinRoomId.trim()) navigate(`/document/${joinRoomId}`);
   };
-
-  const loadMoreDocs = () => {
-    setDisplayedDocs(documents.length); // show all remaining
-  };
-
-  // Removed the authentication check that returned null
 
   return (
     <div
@@ -127,8 +88,9 @@ const DashboardPage = () => {
               color: FLUENT_PRIMARY_TEXT,
             }}
           >
-            Welcome, {user?.name} 🚀
+            Welcome, {user?.name || "Guest"} 🚀
           </h2>
+
           <div style={{ display: "flex", gap: "15px" }}>
             <button
               onClick={() => navigate("/templates")}
@@ -143,6 +105,7 @@ const DashboardPage = () => {
             >
               📋 Templates
             </button>
+
             <button
               onClick={() => setShowSettings(true)}
               style={{
@@ -155,6 +118,7 @@ const DashboardPage = () => {
             >
               🎨 Settings
             </button>
+
             <button
               onClick={logout}
               style={{
@@ -172,7 +136,7 @@ const DashboardPage = () => {
 
         {/* --- MAIN CONTENT GRID --- */}
         <div style={mainContentGridStyle}>
-          {/* LEFT COLUMN: PAST ROOMS + NEW FILE CARD */}
+          {/* LEFT COLUMN: RECENT BOARDS */}
           <div>
             <h3
               style={{
@@ -185,7 +149,7 @@ const DashboardPage = () => {
               Your Recent Boards
             </h3>
 
-            {/* --- NEW FILE / TEMPLATE CARD --- */}
+            {/* --- NEW BOARD CARD --- */}
             <div
               onClick={() => navigate("/templates")}
               style={{
@@ -199,7 +163,7 @@ const DashboardPage = () => {
                 fontWeight: 600,
                 fontSize: "1.1rem",
                 cursor: "pointer",
-                backgroundColor: "rgba(94, 56, 204, 0.9)", // Fluent Blue-ish
+                backgroundColor: "rgba(94, 56, 204, 0.9)",
                 color: "#fff",
                 textAlign: "center",
                 transition: "transform 0.2s",
@@ -224,81 +188,54 @@ const DashboardPage = () => {
               </p>
             </div>
 
-            {loadingDocs ? (
-              <p style={{ color: FLUENT_SECONDARY_TEXT }}>
-                Loading your documents...
-              </p>
-            ) : documents.length === 0 ? (
-              <p style={{ color: FLUENT_SECONDARY_TEXT }}>
-                You have no saved rooms.
-              </p>
-            ) : (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px",
-                }}
-              >
-                {documents.slice(0, displayedDocs).map((doc) => (
-                  <div
-                    key={doc._id}
+            {/* --- MOCK DOCUMENTS LIST --- */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+              }}
+            >
+              {documents.map((doc) => (
+                <div
+                  key={doc._id}
+                  style={{
+                    ...glassCardStyle,
+                    padding: "18px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <span
                     style={{
-                      ...glassCardStyle,
-                      padding: "18px",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: 0,
-                      color: textColor,
-                      cursor: "pointer",
+                      fontWeight: "600",
+                      color: FLUENT_PRIMARY_TEXT,
+                      fontSize: "1.1rem",
                     }}
                   >
-                    <span
-                      style={{
-                        fontWeight: "600",
-                        color: FLUENT_PRIMARY_TEXT,
-                        fontSize: "1.1rem",
-                      }}
-                    >
-                      {doc.name}
-                    </span>
-                    <Link
-                      to={`/document/${doc._id}`}
-                      style={{
-                        padding: "8px 16px",
-                        backgroundColor: "rgba(255,255,255,0.1)",
-                        color: FLUENT_PRIMARY_TEXT,
-                        borderRadius: "6px",
-                        textDecoration: "none",
-                        fontWeight: 500,
-                      }}
-                    >
-                      Re-open
-                    </Link>
-                  </div>
-                ))}
-                {documents.length > 5 && displayedDocs < documents.length && (
-                  <button
-                    onClick={loadMoreDocs}
+                    {doc.name}
+                  </span>
+                  <Link
+                    to={`/document/${doc._id}`}
                     style={{
-                      marginTop: "10px",
-                      padding: "10px 12px",
-                      backgroundColor: FLUENT_BLUE,
-                      color: "white",
-                      borderRadius: "8px",
-                      border: "none",
-                      cursor: "pointer",
+                      padding: "8px 16px",
+                      backgroundColor: "rgba(255,255,255,0.1)",
+                      color: FLUENT_PRIMARY_TEXT,
+                      borderRadius: "6px",
+                      textDecoration: "none",
+                      fontWeight: 500,
                     }}
                   >
-                    Load More
-                  </button>
-                )}
-              </div>
-            )}
+                    Re-open
+                  </Link>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* RIGHT COLUMN: CREATE/JOIN */}
+          {/* RIGHT COLUMN: CREATE / JOIN */}
           <div
             style={{ display: "flex", flexDirection: "column", gap: "20px" }}
           >
@@ -308,7 +245,6 @@ const DashboardPage = () => {
               style={{
                 ...glassCardStyle,
                 padding: "30px 20px",
-                marginBottom: 0,
               }}
             >
               <h3 style={{ color: FLUENT_PRIMARY_TEXT, marginBottom: "15px" }}>
@@ -352,7 +288,6 @@ const DashboardPage = () => {
               style={{
                 ...glassCardStyle,
                 padding: "30px 20px",
-                marginBottom: 0,
               }}
             >
               <h3 style={{ color: FLUENT_PRIMARY_TEXT, marginBottom: "15px" }}>
@@ -393,7 +328,7 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* Background Settings Modal */}
+      {/* BACKGROUND SETTINGS MODAL */}
       {showSettings && (
         <>
           <div

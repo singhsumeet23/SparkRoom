@@ -27,14 +27,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/templates" element={<TemplatePage />} />
         {/* Protected Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <DashboardPage />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/dashboard" element={<DashboardPage />} />
 
         <Route
           path="/document/:documentId"

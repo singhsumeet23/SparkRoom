@@ -1,9 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import { useAuth } from "../context/AuthContext";
 
 const ACCENT_COLOR_DARK = "#6c5ce7";
-const ACCENT_COLOR_LIGHT = "#a29bfe";
 const FONT_STACK = "Inter, Helvetica Neue, Arial, sans-serif";
 
 const styles = {
@@ -31,21 +29,19 @@ const styles = {
     fontFamily: FONT_STACK,
     position: "relative",
     overflow: "hidden",
-    transition: "all 0.5s ease",
   },
   header: {
     color: "white",
-    fontSize: "4.0rem",
+    fontSize: "4rem",
     marginBottom: "15px",
     fontWeight: 800,
     textAlign: "center",
-    letterSpacing: "-2.0px",
     textShadow: "0 4px 10px rgba(0,0,0,0.3)",
     animation: "fadeInSlide 1s ease-out 0.3s forwards",
     opacity: 0,
   },
   subtext: {
-    color: "rgba(255, 255, 255, 0.9)",
+    color: "rgba(255,255,255,0.9)",
     fontSize: "1.6rem",
     maxWidth: "750px",
     marginBottom: "80px",
@@ -57,12 +53,11 @@ const styles = {
   },
   ctaContainer: {
     display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
     gap: "30px",
-    marginTop: "15px",
     animation: "fadeInSlide 1s ease-out 0.7s forwards",
     opacity: 0,
-    alignItems: "center",
-    flexDirection: "column",
   },
   buttonGroup: {
     display: "flex",
@@ -78,7 +73,7 @@ const styles = {
     borderRadius: "16px",
     fontWeight: 700,
     boxShadow: `0 10px 25px rgba(0, 0, 0, 0.25)`,
-    transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+    transition: "all 0.3s ease",
     cursor: "pointer",
   },
   secondaryButton: {
@@ -87,18 +82,16 @@ const styles = {
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     color: "white",
     border: `2px solid rgba(255, 255, 255, 0.8)`,
-    textDecoration: "none",
     borderRadius: "16px",
     fontWeight: 700,
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-    transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+    textDecoration: "none",
+    transition: "all 0.3s ease",
   },
   contactLink: {
     color: "rgba(255, 255, 255, 0.8)",
-    fontSize: "1.0rem",
+    fontSize: "1rem",
     textDecoration: "underline",
     fontWeight: 500,
-    transition: "color 0.2s ease",
     textShadow: "0 1px 2px rgba(0, 0, 0, 0.3)",
   },
 };
@@ -107,7 +100,7 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   const handleStartFreeBoard = () => {
-    // Directly go to dashboard — no auth, no guest login
+    // ✅ Go directly to dashboard
     navigate("/dashboard");
   };
 
