@@ -1,7 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 const ACCENT_COLOR_DARK = "#6c5ce7";
 const ACCENT_COLOR_LIGHT = "#a29bfe";
@@ -80,6 +79,7 @@ const styles = {
     fontWeight: 700,
     boxShadow: `0 10px 25px rgba(0, 0, 0, 0.25)`,
     transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+    cursor: "pointer",
   },
   secondaryButton: {
     padding: "18px 45px",
@@ -104,29 +104,12 @@ const styles = {
 };
 
 const LandingPage = () => {
-  const { isAuthenticated, loginAsGuest } = useAuth();
   const navigate = useNavigate();
 
-  const handleStartFreeBoard = async () => {
-    // If already authenticated, go to dashboard
-    if (isAuthenticated) {
-      navigate("/dashboard");
-      return;
-    }
-
-    // If not authenticated, login as guest and then go to dashboard
-    try {
-      await loginAsGuest();
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Failed to login as guest:", error);
-      // Fallback: still navigate to dashboard
-      navigate("/dashboard");
-    }
+  const handleStartFreeBoard = () => {
+    // Directly go to dashboard — no auth, no guest login
+    navigate("/dashboard");
   };
-
-  // Remove the automatic redirect for authenticated users
-  // This allows the landing page to be visible to everyone
 
   return (
     <>
